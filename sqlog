@@ -1,28 +1,25 @@
 #!/bin/bash
 
+# Manage MySQL log
+
 QUERYLOG=`awk '{ FS = "log="; print $2}' /etc/my.cnf | tail -n1`
 
 function sqlfollow {
     tail -f $QUERYLOG | grep ${1-Query}
 }
 
-# Manage MySQL log
-function sqlog {
-    case $1 in
-       clear)
-           echo '' > $QUERYLOG
-       ;;
-       follow)
-           sqlfollow $2
-       ;;
-       *)
-           if [ -z $1 ]; then
-               sqlfollow;
-           else
-               echo "Usage: sqlog (clear|follow)";
-               set -e;
-           fi
-       ;;
-    esac
-}
-
+case $1 in
+   clear)
+       echo '' > $QUERYLOG
+   ;;
+   follow)
+       sqlfollow $2
+   ;;
+   '')
+       sqlfollow
+   ;;
+   *)
+       echo "Usage: sqlog (clear|follow)";
+       set -e;
+   ;;
+esac
