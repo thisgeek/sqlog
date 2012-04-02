@@ -2,7 +2,7 @@
 
 # Manage MySQL log
 
-QUERYLOG=`awk '{ FS = "log="; print $2}' /etc/my.cnf | tail -n1`
+QUERYLOG=`grep log /etc/my.cnf | awk -F "=" '{print $2}'`
 
 function sqlfollow {
     tail -f $QUERYLOG | grep ${1-Query}
